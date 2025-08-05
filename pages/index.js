@@ -1,25 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-// Mock Navbar component for demo
-const Navbar = ({ bgColor }) => (
-  <nav style={{
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '60px',
-    backgroundColor: bgColor,
-    zIndex: 1000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '18px',
-    fontWeight: '600'
-  }}>
-    Logo
-  </nav>
-);
+import "fullpage.js/dist/fullpage.css";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
   const words = ["piece of art", "crocheted things", "Notion templates"];
@@ -49,8 +31,17 @@ export default function Home() {
       if (!mounted || isMobile) return; // Disable fullpage on mobile
       
       try {
-        // Mock fullpage.js functionality for demo
-        console.log("Fullpage would initialize here");
+        const fullpage = (await import("fullpage.js")).default;
+        if (fullpageRef.current && !fpInstanceRef.current && mounted) {
+          fpInstanceRef.current = new fullpage(fullpageRef.current, {
+            autoScrolling: true,
+            navigation: true,
+            navigationPosition: "right",
+            scrollingSpeed: 800,
+            animateAnchor: false,
+            recordHistory: false,
+          });
+        }
       } catch (error) {
         console.error("Error initializing fullpage:", error);
       }
@@ -278,95 +269,116 @@ export default function Home() {
                   width: '100%',
                   maxWidth: '280px',
                 }}>
-                  {[1, 2, 3, 4].map((num) => (
-                    <div
-                      key={num}
-                      style={{
-                        width: '130px',
-                        height: '100px',
-                        backgroundColor: '#f0f0f0',
-                        borderRadius: '12px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '0.8rem',
-                        color: '#666',
-                      }}
-                    >
-                      Art {num}
-                    </div>
-                  ))}
+                  <img
+                    src="/art-images/1.jpg"
+                    alt="Art piece 1"
+                    style={{
+                      width: '130px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
+                  <img
+                    src="/art-images/2.jpg"
+                    alt="Art piece 2"
+                    style={{
+                      width: '130px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
+                  <img
+                    src="/art-images/3.jpg"
+                    alt="Art piece 3"
+                    style={{
+                      width: '130px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
+                  <img
+                    src="/art-images/4.jpg"
+                    alt="Art piece 4"
+                    style={{
+                      width: '130px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
                 </div>
               ) : (
                 <>
-                  <div style={{
-                    position: "absolute",
-                    top: "30px",
-                    left: "40px",
-                    width: "100px",
-                    height: "200px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>Art 1</div>
+                  <img
+                    src="/art-images/1.jpg"
+                    alt="Art piece 1"
+                    style={{
+                      position: "absolute",
+                      top: "30px",
+                      left: "40px",
+                      width: "100px",
+                      height: "200px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 2,
+                    }}
+                  />
                   
-                  <div style={{
-                    position: "absolute",
-                    top: "20px",
-                    left: "120px",
-                    width: "100px",
-                    height: "220px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>Art 2</div>
+                  <img
+                    src="/art-images/2.jpg"
+                    alt="Art piece 2"
+                    style={{
+                      position: "absolute",
+                      top: "20px",
+                      left: "120px",
+                      width: "100px",
+                      height: "220px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 4,
+                    }}
+                  />
                   
-                  <div style={{
-                    position: "absolute",
-                    top: "40px",
-                    left: "200px",
-                    width: "100px",
-                    height: "180px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>Art 3</div>
+                  <img
+                    src="/art-images/3.jpg"
+                    alt="Art piece 3"
+                    style={{
+                      position: "absolute",
+                      top: "40px",
+                      left: "200px",
+                      width: "100px",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 3,
+                    }}
+                  />
                   
-                  <div style={{
-                    position: "absolute",
-                    top: "50px",
-                    left: "280px",
-                    width: "100px",
-                    height: "160px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>Art 4</div>
+                  <img
+                    src="/art-images/4.jpg"
+                    alt="Art piece 4"
+                    style={{
+                      position: "absolute",
+                      top: "50px",
+                      left: "280px",
+                      width: "100px",
+                      height: "160px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 1,
+                    }}
+                  />
                 </>
               )}
             </div>
@@ -453,78 +465,89 @@ export default function Home() {
                   maxWidth: '280px',
                   justifyContent: 'center',
                 }}>
-                  {[1, 2, 3].map((num) => (
-                    <div
-                      key={num}
-                      style={{
-                        width: '80px',
-                        height: '120px',
-                        backgroundColor: '#f0f0f0',
-                        borderRadius: '12px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '0.7rem',
-                        color: '#666',
-                      }}
-                    >
-                      Crochet {num}
-                    </div>
-                  ))}
+                  <img
+                    src="/crocheting-images/1.jpg"
+                    alt="Crochet pattern 1"
+                    style={{
+                      width: '80px',
+                      height: '120px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
+                  <img
+                    src="/crocheting-images/2.jpg"
+                    alt="Crochet pattern 2"
+                    style={{
+                      width: '80px',
+                      height: '120px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
+                  <img
+                    src="/crocheting-images/3.jpg"
+                    alt="Crochet pattern 3"
+                    style={{
+                      width: '80px',
+                      height: '120px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
                 </div>
               ) : (
                 <>
-                  <div style={{
-                    position: "absolute",
-                    top: "30px",
-                    left: "80px",
-                    width: "120px",
-                    height: "200px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>Crochet 1</div>
+                  <img
+                    src="/crocheting-images/1.jpg"
+                    alt="Crochet pattern 1"
+                    style={{
+                      position: "absolute",
+                      top: "30px",
+                      left: "80px",
+                      width: "120px",
+                      height: "200px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 3,
+                    }}
+                  />
                   
-                  <div style={{
-                    position: "absolute",
-                    top: "40px",
-                    left: "180px",
-                    width: "120px",
-                    height: "180px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>Crochet 2</div>
+                  <img
+                    src="/crocheting-images/2.jpg"
+                    alt="Crochet pattern 2"
+                    style={{
+                      position: "absolute",
+                      top: "40px",
+                      left: "180px",
+                      width: "120px",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 2,
+                    }}
+                  />
                   
-                  <div style={{
-                    position: "absolute",
-                    top: "20px",
-                    left: "280px",
-                    width: "120px",
-                    height: "220px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>Crochet 3</div>
+                  <img
+                    src="/crocheting-images/3.jpg"
+                    alt="Crochet pattern 3"
+                    style={{
+                      position: "absolute",
+                      top: "20px",
+                      left: "280px",
+                      width: "120px",
+                      height: "220px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 4,
+                    }}
+                  />
                 </>
               )}
             </div>
@@ -581,97 +604,94 @@ export default function Home() {
                   width: '100%',
                   maxWidth: '200px',
                 }}>
-                  <div style={{
-                    width: '180px',
-                    height: '100px',
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: '12px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.8rem',
-                    color: '#666',
-                  }}>
-                    Desktop
-                  </div>
+                  <img
+                    src="/notion-images/hero-pc.png"
+                    alt="Notion Desktop"
+                    style={{
+                      width: '180px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    }}
+                  />
                   <div style={{
                     display: 'flex',
                     gap: '8px',
                   }}>
-                    {[1, 2].map((num) => (
-                      <div
-                        key={num}
-                        style={{
-                          width: '60px',
-                          height: '100px',
-                          backgroundColor: '#f0f0f0',
-                          borderRadius: '12px',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.7rem',
-                          color: '#666',
-                        }}
-                      >
-                        Phone {num}
-                      </div>
-                    ))}
+                    <img
+                      src="/notion-images/phone1.jpg"
+                      alt="Phone 1"
+                      style={{
+                        width: '60px',
+                        height: '100px',
+                        objectFit: 'cover',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      }}
+                    />
+                    <img
+                      src="/notion-images/phone-2.jpg"
+                      alt="Phone 2"
+                      style={{
+                        width: '60px',
+                        height: '100px',
+                        objectFit: 'cover',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      }}
+                    />
                   </div>
                 </div>
               ) : (
                 <>
-                  <div style={{
-                    position: "absolute",
-                    top: "60px",
-                    left: "120px",
-                    width: "240px",
-                    height: "144px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.9rem',
-                    color: '#666',
-                  }}>Desktop</div>
+                  <img
+                    src="/notion-images/hero-pc.png"
+                    alt="Notion Desktop"
+                    style={{
+                      position: "absolute",
+                      top: "60px",
+                      left: "120px",
+                      width: "240px",
+                      height: "144px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 3,
+                    }}
+                  />
                   
-                  <div style={{
-                    position: "absolute",
-                    top: "40px",
-                    left: "40px",
-                    width: "90px",
-                    height: "180px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.7rem',
-                    color: '#666',
-                  }}>Phone 1</div>
+                  <img
+                    src="/notion-images/phone1.jpg"
+                    alt="Phone 1"
+                    style={{
+                      position: "absolute",
+                      top: "40px",
+                      left: "40px",
+                      width: "90px",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 2,
+                    }}
+                  />
                   
-                  <div style={{
-                    position: "absolute",
-                    top: "40px",
-                    left: "350px",
-                    width: "90px",
-                    height: "180px",
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    zIndex: 4,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.7rem',
-                    color: '#666',
-                  }}>Phone 2</div>
+                  <img
+                    src="/notion-images/phone-2.jpg"
+                    alt="Phone 2"
+                    style={{
+                      position: "absolute",
+                      top: "40px",
+                      left: "350px",
+                      width: "90px",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "16px",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                      zIndex: 4,
+                    }}
+                  />
                 </>
               )}
             </div>
