@@ -1,11 +1,110 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Keep your original Navbar component
+// Mobile-responsive Navbar component
 const Navbar = ({ bgColor }) => {
-  // Your original navbar implementation would go here
-  // I'm keeping this minimal since you said not to change it
-  return null;
+  const [isMobileNavbar, setIsMobileNavbar] = useState(false);
+
+  useEffect(() => {
+    const checkMobileNavbar = () => {
+      setIsMobileNavbar(window.innerWidth <= 768);
+    };
+    
+    checkMobileNavbar();
+    window.addEventListener('resize', checkMobileNavbar);
+    
+    return () => window.removeEventListener('resize', checkMobileNavbar);
+  }, []);
+
+  return (
+    <nav
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: isMobileNavbar ? "56px" : "64px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: isMobileNavbar ? "0 12px" : "0 24px",
+        backgroundColor: "rgba(255,255,255,0.7)",
+        backdropFilter: "blur(8px)",
+        borderBottom: "1px solid rgba(220,220,220,0.7)",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
+        zIndex: 9999,
+        transition: "background 0.6s, box-shadow 0.5s",
+      }}
+    >
+      <div
+        style={{
+          fontSize: isMobileNavbar ? "1.2rem" : "1.6rem",
+          fontWeight: "700",
+          color: "#e60023",
+          whiteSpace: "nowrap",
+          letterSpacing: "-0.02em",
+        }}
+      >
+        Nusaiba's Store
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: isMobileNavbar ? "8px" : "24px",
+          flexWrap: "nowrap",
+        }}
+      >
+        <a href="#about" style={{ 
+          textDecoration: "none", 
+          color: "#333",
+          fontSize: isMobileNavbar ? "0.85rem" : "1rem",
+          fontWeight: "600",
+        }}>
+          About
+        </a>
+        <a href="#login" style={{ 
+          textDecoration: "none", 
+          color: "#333",
+          fontSize: isMobileNavbar ? "0.85rem" : "1rem",
+          fontWeight: "600",
+        }}>
+          Login
+        </a>
+        <button
+          style={{
+            backgroundColor: "#e60023",
+            color: "#fff",
+            padding: isMobileNavbar ? "8px 12px" : "12px 20px",
+            borderRadius: "24px",
+            fontSize: isMobileNavbar ? "0.85rem" : "1rem",
+            fontWeight: "600",
+            border: "none",
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            boxShadow: "0 2px 8px rgba(230,0,35,0.2)",
+            transition: "all 0.2s ease",
+            minHeight: isMobileNavbar ? "32px" : "auto",
+          }}
+          onMouseEnter={(e) => {
+            if (!isMobileNavbar) {
+              e.target.style.backgroundColor = "#ad081b";
+              e.target.style.transform = "translateY(-1px)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isMobileNavbar) {
+              e.target.style.backgroundColor = "#e60023";
+              e.target.style.transform = "translateY(0)";
+            }
+          }}
+        >
+          Sign Up
+        </button>
+      </div>
+    </nav>
+  );
 };
 
 export default function Home() {
@@ -13,18 +112,11 @@ export default function Home() {
   const backgrounds = ["#fce4ec", "#e8f5e9", "#e3f2fd"];
   const [index, setIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [isClient, setIsClient] = useState(false);
+  const [fullpageLoaded, setFullpageLoaded] = useState(false);
   const fullpageRef = useRef(null);
   const fpInstanceRef = useRef(null);
 
-  // Client-side rendering check
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-    
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -33,40 +125,80 @@ export default function Home() {
     window.addEventListener('resize', checkMobile);
     
     return () => window.removeEventListener('resize', checkMobile);
-  }, [isClient]);
+  }, []);
 
+  // Load fullpage.js CSS and JS
   useEffect(() => {
-    if (!isClient) return;
-    
-    let mounted = true;
-    let initTimer = null;
-    let wordInterval = null;
+    if (isMobile) return;
 
-    const initFullpage = async () => {
-      if (!mounted || isMobile) return; // Disable fullpage on mobile
-      
-      try {
-        const fullpage = (await import("fullpage.js")).default;
-        if (fullpageRef.current && !fpInstanceRef.current && mounted) {
-          fpInstanceRef.current = new fullpage(fullpageRef.current, {
-            autoScrolling: true,
-            navigation: true,
-            navigationPosition: "right",
-            scrollingSpeed: 800,
-            animateAnchor: false,
-            recordHistory: false,
-          });
-        }
-      } catch (error) {
-        console.error("Error initializing fullpage:", error);
+    const loadFullpage = () => {
+      // Load CSS
+      if (!document.querySelector('link[href*="fullpage"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.css';
+        document.head.appendChild(link);
+      }
+
+      // Load JS
+      if (!window.fullpage) {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js';
+        script.onload = () => {
+          setFullpageLoaded(true);
+        };
+        script.onerror = () => {
+          console.error('Failed to load fullpage.js');
+          setFullpageLoaded(false);
+        };
+        document.head.appendChild(script);
+      } else {
+        setFullpageLoaded(true);
       }
     };
 
-    const cleanupFullpage = () => {
+    loadFullpage();
+  }, [isMobile]);
+
+  // Initialize fullpage.js
+  useEffect(() => {
+    if (isMobile || !fullpageLoaded || !window.fullpage) return;
+
+    let mounted = true;
+
+    const initFullpage = () => {
+      if (fullpageRef.current && !fpInstanceRef.current && mounted) {
+        try {
+          fpInstanceRef.current = new window.fullpage(fullpageRef.current, {
+            autoScrolling: true,
+            scrollHorizontally: true,
+            navigation: true,
+            navigationPosition: "right",
+            scrollingSpeed: 700,
+            easing: 'easeInOutCubic',
+            easingcss3: 'ease',
+            animateAnchor: false,
+            recordHistory: false,
+            keyboardScrolling: true,
+            touchSensitivity: 15,
+          });
+          console.log('Fullpage.js initialized successfully');
+        } catch (error) {
+          console.error("Error initializing fullpage:", error);
+        }
+      }
+    };
+
+    const timer = setTimeout(initFullpage, 500);
+
+    return () => {
+      mounted = false;
+      clearTimeout(timer);
+      
       if (fpInstanceRef.current) {
         try {
           if (typeof fpInstanceRef.current.destroy === 'function') {
-            fpInstanceRef.current.destroy("all");
+            fpInstanceRef.current.destroy('all');
           }
         } catch (error) {
           console.error("Error destroying fullpage:", error);
@@ -75,29 +207,16 @@ export default function Home() {
         }
       }
     };
+  }, [isMobile, fullpageLoaded]);
 
-    if (!isMobile) {
-      initTimer = setTimeout(initFullpage, 100);
-    }
-    
-    wordInterval = setInterval(() => {
-      if (mounted) {
-        setIndex((prev) => (prev + 1) % words.length);
-      }
+  // Word cycling effect
+  useEffect(() => {
+    const wordInterval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
     }, 3000);
 
-    return () => {
-      mounted = false;
-      if (initTimer) clearTimeout(initTimer);
-      if (wordInterval) clearInterval(wordInterval);
-      cleanupFullpage();
-    };
-  }, [isMobile, isClient]);
-
-  // Don't render on server side
-  if (!isClient) {
-    return <div>Loading...</div>;
-  }
+    return () => clearInterval(wordInterval);
+  }, []);
 
   const sectionStyle = {
     minHeight: isMobile ? 'auto' : '100vh',
@@ -164,14 +283,14 @@ export default function Home() {
     fontFamily: "-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif",
     transition: 'all 0.2s ease',
     boxShadow: '0 2px 8px rgba(230, 0, 35, 0.2)',
-    minHeight: '48px', // Better touch target
+    minHeight: '48px',
   };
 
   return (
     <>
       <Navbar bgColor={backgrounds[index]} />
 
-      {/* Only show background animation on hero slide */}
+      {/* Background animation only for hero section on desktop */}
       {!isMobile && (
         <AnimatePresence mode="wait">
           <motion.div
@@ -191,10 +310,14 @@ export default function Home() {
         </AnimatePresence>
       )}
 
-      <div id="fullpage" ref={fullpageRef} style={{ 
-        overflowX: 'hidden',
-        ...(isMobile && { overflow: 'visible' })
-      }}>
+      <div 
+        id="fullpage" 
+        ref={fullpageRef} 
+        style={{ 
+          overflowX: 'hidden',
+          ...(isMobile && { overflow: 'visible' })
+        }}
+      >
         {/* Slide 1: Hero */}
         <div className="section" style={{ 
           position: "relative",
@@ -279,12 +402,10 @@ export default function Home() {
           backgroundColor: "#fff9e6",
         }}>
           <div style={containerStyle}>
-            {/* Images - Show first on mobile */}
             <div style={{
               ...imageGridStyle,
               order: isMobile ? 1 : 1,
             }}>
-              {/* Simplified mobile layout */}
               {isMobile ? (
                 <div style={{
                   display: 'grid',
@@ -407,7 +528,6 @@ export default function Home() {
               )}
             </div>
 
-            {/* Text */}
             <div style={{
               ...textSectionStyle,
               textAlign: isMobile ? 'center' : 'right',
@@ -446,7 +566,6 @@ export default function Home() {
           backgroundColor: "#fff8f0",
         }}>
           <div style={containerStyle}>
-            {/* Text - Show first on mobile */}
             <div style={{
               ...textSectionStyle,
               order: isMobile ? 1 : 1,
@@ -476,7 +595,6 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Images */}
             <div style={{
               ...imageGridStyle,
               order: isMobile ? 2 : 2,
@@ -584,7 +702,6 @@ export default function Home() {
           backgroundColor: "#e3f2fd",
         }}>
           <div style={containerStyle}>
-            {/* Text */}
             <div style={{
               ...textSectionStyle,
               order: isMobile ? 1 : 1,
@@ -614,7 +731,6 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Images */}
             <div style={{
               ...imageGridStyle,
               order: isMobile ? 2 : 2,
